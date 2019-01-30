@@ -21,16 +21,68 @@ export class AppComponent implements OnInit {
     center: latLng(51.9487949, 7.6237527)
   };
   drawOptions = {
-    position: 'bottomright',
+    position: 'topleft',
     draw: {
       circlemarker: false,
       polyline: true
     },
     featureGroup: this.allDrawnItems
   };
+  reset = true;
+  flightPlans: any[] = [];
 
-  constructor() {}
-  ngOnInit() {
+  constructor() {
+    this.persistData();
+  }
+  ngOnInit() {}
+
+  savePlans() {
+    this.saveLocalStorage();
+  }
+
+  onDrawReady(event) {
+    this.flightPlans.push(event.layer._latlngs);
+  }
+
+  onMapReady(map: L.Map) {
+    this.map = map;
+    const flightPolyLines = [];
+    console.log(this.flightPlans);
+    this.flightPlans.forEach(element => {
+      const currentPolyLine = new L.Polyline(element, {
+        color: 'red',
+        weight: 3,
+        opacity: 0.5,
+        smoothFactor: 1
+      });
+      currentPolyLine.addTo(this.map);
+    });
+  }
+
+  saveLocalStorage() {
+    localStorage.setItem('flightPlans', JSON.stringify(this.flightPlans));
+  }
+
+  persistData() {
+    const persistData = localStorage.getItem('flightPlans');
+    if (persistData) {
+      this.flightPlans = JSON.parse(persistData);
+    }
+  }
+
+  cleanPlans() {
+    localStorage.clear();
+    this.flightPlans = [];
+    this.map.off();
+    this.map.remove();
+    this.resetMap();
+  }
+
+  resetMap() {
+    this.reset = false;
+    setTimeout(() => {
+      this.reset = true;
+    }, 500);
     this.options = {
       layers: [
         tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -38,31 +90,16 @@ export class AppComponent implements OnInit {
           attribution: '...'
         })
       ],
-      zoom: 12,
+      zoom: 5,
       center: latLng(51.9487949, 7.6237527)
     };
     this.drawOptions = {
-      position: 'bottomright',
+      position: 'topleft',
       draw: {
         circlemarker: false,
         polyline: true
       },
       featureGroup: this.allDrawnItems
     };
-  }
-
-  btn_drawPolygon() {
-    const polylineDrawer = new L.Draw.Polyline(this.map); // <-- throws error
-    polylineDrawer.enable();
-  }
-
-  onDrawReady(event) {
-    console.log(event.layer);
-  }
-
-  onMapReady(map: L.Map) {
-    console.log('ON MAP READY CALLED');
-    console.log(this.map);
-    this.map = map;
   }
 }

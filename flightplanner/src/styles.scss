@@ -3,3 +3,19 @@ body {
   height: 100vh;
   width: 100%;
 }
+
+@import '~bootstrap/scss/bootstrap-reboot';
+@import '~bootstrap/scss/bootstrap-grid';
+@import '~bootstrap/scss/utilities/_spacing';
+@import '~bootstrap/scss/utilities/_text';
+* {
+  &:active,
+  :focus {
+    outline: none !important;
+  }
+}
+
+label {
+  margin-bottom: 0;
+}
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';

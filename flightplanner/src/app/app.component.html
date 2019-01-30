@@ -1,8 +1,37 @@
-<!--The content below is only a placeholder and can be replaced.-->
+<header>
+  <mat-toolbar color="primary">Flight Planner</mat-toolbar>
+</header>
 
-<div style="text-align:center; margin-top: 64px;">
-  <div leaflet [leafletOptions]="options" style="height: 80%;">
-    <div leafletDraw [leafletDrawOptions]="drawOptions" (leafletDrawCreated)="onDrawReady($event)"></div>
+<section class="container">
+  <div class="row mt-4 mb-4">
+    <mat-card class="col-md-6">
+      <div *ngIf="reset" leaflet [leafletOptions]="options" (leafletMapReady)="onMapReady($event)" style="height: 450px;">
+        <div leafletDraw [leafletDrawOptions]="drawOptions" (leafletDrawCreated)="onDrawReady($event)"></div>
+      </div>
+      <div class="row justify-content-center mt-4 mb-4">
+        <div class="col-md-6">
+          <button (click)="savePlans()" mat-raised-button color="primary" style="height: 38px;" class="mr-2">Save
+            plans</button>
+          <button (click)="cleanPlans()" mat-raised-button color="warn">Clear plans(store)</button></div>
+
+
+      </div>
+    </mat-card>
+    <mat-card class="col-md-6 ">
+      <mat-card-header>
+        <mat-card-title>Flight Plans</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-list role="list">
+          <mat-list-item role="listitem" *ngFor="let flightPlan of flightPlans; let i = index">
+            <h3 matLine>Flight Plan {{i+1}}</h3>
+            <h3 matLine>Coordinates </h3>
+            <span matLine *ngFor="let coordinates of flightPlan; let i = index">Point {{ i+1}}: Lat:
+              {{coordinates.lat}}
+              Lng: {{coordinates.lng}}</span>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
   </div>
-  <button (click)="btn_drawPolygon()" mat-raised-button color="primary" style="height: 38px;">draw polyline</button>
-</div>
+</section>
